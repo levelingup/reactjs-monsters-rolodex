@@ -23,10 +23,18 @@ class App extends Component {
       );
   }
 
-  render() {
+  onSearchChange = (e) => {
+    const searchField = e.target.value.toLocaleLowerCase();
+    this.setState(() => {
+      return { searchField }
+    })
+  }
 
-    const filteredMonsters = this.state.monsters.filter(monster => {
-      return monster.name.toLocaleLowerCase().includes(this.state.searchField);
+  render() {
+    const { monsters, searchField } = this.state;
+    const { onSearchChange } = this;
+    const filteredMonsters = monsters.filter(monster => {
+      return monster.name.toLocaleLowerCase().includes(searchField);
     });
 
     return (
@@ -34,12 +42,7 @@ class App extends Component {
         <input
           type="search"
           placeholder="search monsters"
-          onChange={(e) => {
-            const searchField = e.target.value.toLocaleLowerCase();
-            this.setState(() => {
-              return { searchField }
-            })
-          }}
+          onChange={onSearchChange}
         />
         <CardList name="">
           {filteredMonsters.map(monster => (
