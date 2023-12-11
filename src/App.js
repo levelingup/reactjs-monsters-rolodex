@@ -9,24 +9,37 @@ const App = () => {
   const [searchField, setSearchField] = useState('');
   const [monsters, setMonsters] = useState([]);
 
+  // make another affect hook so filtered monsters doesn't get called on every render
+  const [filteredMonsters, setFilterMonsters] = useState(monsters)
+  const [stringField, setStringField] = useState('');
+
+  
   useEffect(() => {
     fetch("https://jsonplaceholder.typicode.com/users")
-      .then(response => response.json())
-      .then(users => setMonsters(users)
+    .then(response => response.json())
+    .then(users => setMonsters(users)
     );
   }, [])
+  useEffect(() => {
+    const newFilteredMonsters = monsters.filter(monster => {
+      return monster.name.toLocaleLowerCase().includes(searchField);
+    });
+    setFilterMonsters(newFilteredMonsters)
+  }, [monsters, searchField])
+
   const onSearchChange = (event) => {
     const searchFieldString = event.target.value.toLocaleLowerCase();
     setSearchField(searchFieldString  );
   }
 
-  const filteredMonsters = monsters.filter(monster => {
-      return monster.name.toLocaleLowerCase().includes(searchField);
-  });
+  const onStringChange = (event) => {
+    setStringField(event.target.value);
+  }
+
   return (
     <div className="App">
         <h1 className="app-title">Monsters Rolodex</h1>
-        <SearchBox onChangeHandler={onSearchChange} placeholder='Search monsters' className="search-box"/>
+        <SearchBox onChangeHandler={onSearchChange} placeholder='Search monsters' className="monsters-search-box" />
         <CardList monsters={filteredMonsters} />
       </div>
   )
